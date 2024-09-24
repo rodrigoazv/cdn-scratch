@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  backend:
+    image: igorbarinov/openresty-nginx-module-vts
+    volumes:
+      - "./generic_conf/:/usr/local/openresty/nginx/conf/generic_conf/"
+      - "./backend_nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
+    ports:
+      - "8080:8080"
