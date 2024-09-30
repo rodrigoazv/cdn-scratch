@@ -1,9 +1,28 @@
 version: "3.9"
 services:
-  backend:
+  nginx_base:
     image: igorbarinov/openresty-nginx-module-vts
     volumes:
-      - "./generic_conf/:/usr/local/openresty/nginx/conf/generic_conf/"
+      - "./generic_conf/vts_location.conf:/usr/local/openresty/nginx/conf/vts_location.conf"
+      - "./generic_conf/vts.conf:/usr/local/openresty/nginx/conf/vts.conf"
+      - "./generic_conf/lua_setup.conf:/usr/local/openresty/nginx/conf/lua_setup.conf"
+      - "./src/:/lua/src/"
+
+  backend:
+    extends:
+      service: nginx_base
+    volumes:
       - "./backend_nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
     ports:
       - "8080:8080"
+
+  edge:
+    extends:
+      service: nginx_base
+    volumes:
+      - "./nginx_edge.conf:/usr/local/openresty/nginx/conf/nginx.conf"
+      - "./edge/:/cache/"
+    depends_on:
+      - backend
+    ports:
+      - "8081:8080"
